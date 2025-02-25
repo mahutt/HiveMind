@@ -1,0 +1,19 @@
+{
+  "name": "hivemind",
+  "module": "server/index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun run server/index.ts"
+  },
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/figlet": "^1.7.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "figlet": "^1.8.0"
+  }
+}
