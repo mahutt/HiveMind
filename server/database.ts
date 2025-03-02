@@ -7,20 +7,28 @@ const client = new Client({
 })
 await client.connect()
 
-const createVectorsTable = async () => {
+const createVectorsTable = async (): Promise<boolean> => {
+  const checkTableQuery = `
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_schema = 'public' 
+        AND table_name = 'vectors'
+      );`
+
+  const tableExists = await client.query(checkTableQuery)
+  if (tableExists.rows[0].exists) return false
+
   const createTableQuery = `
-    CREATE TABLE IF NOT EXISTS vectors (
-      id SERIAL PRIMARY KEY,
-      text TEXT,
-      vector VECTOR(1536),
-      metadata JSONB
-    );
-  `
-  try {
-    await client.query(createTableQuery)
-  } catch (err) {
-    console.error('Error creating table:', err)
-  }
+      CREATE TABLE vectors (
+        id SERIAL PRIMARY KEY,
+        text TEXT,
+        vector VECTOR(1536),
+        metadata JSONB
+      );`
+
+  await client.query(createTableQuery)
+  console.info('Table "vectors" successfully created.')
+  return true
 }
 
 const insertVector = async (text: string, vector: number[], metadata: any) => {
@@ -28,7 +36,7 @@ const insertVector = async (text: string, vector: number[], metadata: any) => {
         INSERT INTO vectors (text, vector, metadata)
         VALUES ($1, $2, $3)
         RETURNING *;`
-  const values = [text, JSON.stringify(vector), metadata]
+  const values = [text, `[${vector.join(',')}]`, metadata]
   try {
     await client.query(insertQuery, values)
   } catch (error) {
@@ -48,7 +56,7 @@ const vectorSearch = async (queryVector: number[], topK = 3) => {
     `
   try {
     const result = await client.query(searchQuery, [
-      JSON.stringify(queryVector),
+      `[${queryVector.join(',')}]`,
       topK,
     ])
     return result.rows.map((row) => ({
