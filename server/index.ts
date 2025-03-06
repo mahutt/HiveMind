@@ -8,11 +8,9 @@ const server = Bun.serve({
   routes: {
     '/setup': {
       POST: async () => {
-        if (await createVectorsTable()) {
-          await populateDatabase()
-          return new Response('Database created and populated')
-        }
-        return new Response('Database already exists')
+        await createVectorsTable()
+        await populateDatabase()
+        return new Response('Database created and populated')
       },
     },
     '/query': {
