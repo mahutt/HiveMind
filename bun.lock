@@ -8,6 +8,7 @@
       "name": "client",
       "version": "0.0.0",
       "dependencies": {
+        "models": "workspace:*",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
       },
@@ -25,11 +26,15 @@
         "vite": "^6.2.0",
       },
     },
+    "packages/models": {
+      "name": "models",
+    },
     "packages/server": {
       "name": "server",
       "dependencies": {
         "dotenv": "^16.4.7",
         "figlet": "^1.8.0",
+        "models": "workspace:*",
         "openai": "^4.86.1",
         "pg": "^8.13.3",
       },
@@ -461,6 +466,8 @@
     "mime-types": ["mime-types@2.1.35", "", { "dependencies": { "mime-db": "1.52.0" } }, "sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw=="],
 
     "minimatch": ["minimatch@3.1.2", "", { "dependencies": { "brace-expansion": "^1.1.7" } }, "sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw=="],
+
+    "models": ["models@workspace:packages/models"],
 
     "ms": ["ms@2.1.3", "", {}, "sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA=="],
 

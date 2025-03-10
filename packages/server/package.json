@@ -14,6 +14,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "models": "workspace:*",
     "dotenv": "^16.4.7",
     "figlet": "^1.8.0",
     "openai": "^4.86.1",
