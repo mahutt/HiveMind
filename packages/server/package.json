@@ -14,9 +14,11 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "models": "workspace:*",
+    "axios": "^1.8.3",
+    "cheerio": "^1.0.0",
     "dotenv": "^16.4.7",
     "figlet": "^1.8.0",
+    "models": "workspace:*",
     "openai": "^4.86.1",
     "pg": "^8.13.3"
   }
