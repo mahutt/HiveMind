@@ -25,11 +25,7 @@ await (async () => {
   await client.query(ddl)
 })()
 
-export const createChat = async (
-  initialMessageContent: string,
-  initialMessageRole: 'user' | 'assistant',
-  title: string = 'New Chat'
-): Promise<Chat> => {
+export const createChat = async (title: string = 'New Chat'): Promise<Chat> => {
   const query = `
         INSERT INTO chat (title)
         VALUES ($1)
@@ -41,15 +37,6 @@ export const createChat = async (
     ...result.rows[0],
     messages: [],
   }
-
-  const message = await createMessage(
-    chat.id,
-    initialMessageRole,
-    initialMessageContent,
-    Date.now()
-  )
-  if (message) chat.messages.push(message)
-
   return chat
 }
 

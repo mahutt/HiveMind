@@ -5,6 +5,12 @@ import { answerWithRAG, populateDatabase } from './functions'
 import { getCompletion } from './openai'
 import type { Chat } from 'models'
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+}
+
 const server = Bun.serve({
   port: 3000,
   routes: {
@@ -23,21 +29,22 @@ const server = Bun.serve({
       },
     },
     '/api': {
+      OPTIONS: () => new Response(null, { headers: corsHeaders }),
       POST: async (req) => {
-        const { message } = await req.json()
-        let chat: Chat | null = await createChat(message, 'user')
-        const assitantMessage =
-          (await getCompletion(chat.messages)) ??
-          '<Failed to generate response>'
-        chat = await addMessage(chat.id, assitantMessage, 'assistant')
-        return Response.json(chat)
+        const chat: Chat = await createChat()
+        return Response.json(chat, {
+          headers: corsHeaders,
+        })
       },
     },
     '/api/:chatId': {
+      OPTIONS: () => new Response(null, { headers: corsHeaders }),
       GET: async (req) => {
         const { chatId } = req.params
         const chat = await getChat(Number(chatId))
-        return Response.json(chat)
+        return Response.json(chat, {
+          headers: corsHeaders,
+        })
       },
       POST: async (req) => {
         const { chatId } = req.params
@@ -53,7 +60,9 @@ const server = Bun.serve({
           (await getCompletion(chat.messages)) ??
           '<Failed to generate response>'
         chat = await addMessage(Number(chatId), assitantMessage, 'assistant')
-        return Response.json(chat)
+        return Response.json(chat, {
+          headers: corsHeaders,
+        })
       },
     },
   },
