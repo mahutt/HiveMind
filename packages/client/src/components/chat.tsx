@@ -6,7 +6,7 @@ import type { Chat, Message } from 'models'
 import { useChat } from '../providers/chat-hook'
 
 export default function Chat() {
-  const { activeChat, setActiveChat } = useChat()
+  const { activeChat, setActiveChat, declareNewChat } = useChat()
   const { toggleChatHistory, toggleSources } = useSidebar()
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(true)
@@ -17,6 +17,7 @@ export default function Chat() {
 
     if (!activeChat) {
       newChat = (await api.post<Chat>('/api')).data
+      declareNewChat(newChat)
     }
 
     const tempMessage: Message = {
@@ -53,7 +54,18 @@ export default function Chat() {
     <div className="flex flex-col h-full">
       {/* Chat Header */}
       <div className="flex flex-row justify-between p-4">
-        <button onClick={toggleChatHistory}>Toggle Chat History</button>
+        <div className="felx flex-row gap-2">
+          <button onClick={toggleChatHistory}>Toggle Chat History</button>
+          <button
+            className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors"
+            onClick={() => {
+              setActiveChat(null)
+              setNewMessage('')
+            }}
+          >
+            +
+          </button>
+        </div>
         <div className="font-semibold text-lg">
           {activeChat?.title ?? 'Blank Chat'}
         </div>

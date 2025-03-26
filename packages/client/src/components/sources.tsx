@@ -3,15 +3,15 @@ import { useChat } from '../providers/chat-hook'
 import { Chat, Citation, Source } from 'models'
 
 function extractUniqueSources(chat: Chat): Source[] {
-  const uniqueSourcesSet = new Set<Source>()
+  const uniqueSourcesMap = new Map<string, Source>()
   chat.messages.forEach((message) => {
     if (message.citations) {
       message.citations.forEach((citation) => {
-        uniqueSourcesSet.add(citation.source)
+        uniqueSourcesMap.set(`${citation.source.id}`, citation.source)
       })
     }
   })
-  return Array.from(uniqueSourcesSet)
+  return Array.from(uniqueSourcesMap.values())
 }
 
 export default function Sources() {
