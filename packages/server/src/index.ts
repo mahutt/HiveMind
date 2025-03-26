@@ -1,8 +1,7 @@
 import 'dotenv/config'
 import figlet from 'figlet'
-import { addMessage, createChat, createVectorsTable, getChat } from './database'
-import { answerWithRAG, populateDatabase } from './functions'
-import { getCompletion } from './openai'
+import { createChat, getChat, newMessage } from './database'
+import { answerWithRAG } from './functions'
 import type { Chat } from 'models'
 
 const corsHeaders = {
@@ -14,20 +13,6 @@ const corsHeaders = {
 const server = Bun.serve({
   port: 3000,
   routes: {
-    '/setup': {
-      POST: async () => {
-        await createVectorsTable()
-        await populateDatabase()
-        return new Response('Database created and populated')
-      },
-    },
-    '/query': {
-      POST: async (req) => {
-        const { query } = await req.json()
-        const { response, context } = await answerWithRAG(query)
-        return Response.json({ response, context })
-      },
-    },
     '/api': {
       OPTIONS: () => new Response(null, { headers: corsHeaders }),
       POST: async (req) => {
@@ -50,16 +35,13 @@ const server = Bun.serve({
         const { chatId } = req.params
         const { message: userMessage } = await req.json()
 
-        let chat = await addMessage(Number(chatId), userMessage, 'user')
-
-        if (chat === null) {
+        let chat: Chat | null = await getChat(Number(chatId))
+        if (chat === null)
           return new Response('Chat not found', { status: 404 })
-        }
 
-        const assitantMessage =
-          (await getCompletion(chat.messages)) ??
-          '<Failed to generate response>'
-        chat = await addMessage(Number(chatId), assitantMessage, 'assistant')
+        const { response, snippet } = await answerWithRAG(chat, userMessage)
+        await newMessage(Number(chatId), 'assistant', response, [snippet])
+        chat = await getChat(Number(chatId))
         return Response.json(chat, {
           headers: corsHeaders,
         })

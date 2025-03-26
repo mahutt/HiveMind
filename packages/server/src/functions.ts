@@ -1,7 +1,13 @@
-import { insertVector, vectorSearch } from './database.js'
+import {
+  saveEmbedding,
+  vectorSearch,
+  newMessage,
+  newSource,
+} from './database.js'
 import { getCompletion, getEmbedding } from './openai.js'
 import fs from 'fs/promises'
 import path from 'path'
+import type { Chat, Snippet } from 'models'
 
 import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
@@ -10,16 +16,24 @@ const __dirname = path.dirname(__filename)
 const populateDatabase = async () => {
   try {
     const data = await fs.readFile(
-      path.join(__dirname, '..', 'assets', 'hayao-miyazaki-chunks.json'),
+      path.join(__dirname, '..', 'assets', 'sample-sources.json'),
       'utf8'
     )
-    const chunks = JSON.parse(data)
-    for (let i = 0; i < chunks.length; i++) {
-      const text = chunks[i]
-      const vector = await getEmbedding(text)
-      const metadata = { doc: 'Hayao_Miyazaki', index: i }
-      await insertVector(text, vector, metadata)
-      console.log(`Embedded and inserted chunk ${i} into the database`)
+    const programs = JSON.parse(data)
+
+    for (const program of programs) {
+      const source = await newSource(program.source.title, program.source.url)
+      for (const chunk of program.chunks) {
+        const embedding = await getEmbedding(chunk)
+        const metadata = { doc: program.source.title }
+        const savedEmbedding = await saveEmbedding(
+          source.id,
+          chunk,
+          embedding,
+          metadata
+        )
+        console.log(savedEmbedding)
+      }
     }
   } catch (error) {
     console.error('Error reading or parsing chunks.json:', error)
@@ -27,27 +41,34 @@ const populateDatabase = async () => {
 }
 
 const answerWithRAG = async (
+  chat: Chat,
   question: string
-): Promise<{ response: string; context: string }> => {
+): Promise<{ response: string; snippet: Snippet }> => {
+  const savedMessage = await newMessage(chat.id, 'user', question)
+  chat.messages.push(savedMessage)
+
   const query_embedding = await getEmbedding(question)
   const results = await vectorSearch(query_embedding)
-  const top_result = results[0]
-  const RAG_PROMPT = ` 
-    Use the following pieces of context to answer the user question.
-    You must only use the facts from the context to answer.
-    If the answer cannot be found in the context, say that you don't have enough information to answer the question and provide any relevant facts found in the context.
-
-    Context:
-    ${top_result.text}
-
-    User Question:
-    ${question}
-  `
-  const response = await getCompletion(RAG_PROMPT)
+  const contextEmbedding = results[0]
+  const response = await getCompletion(chat.messages, contextEmbedding.text)
   return {
     response: response ?? '<No response generated>',
-    context: top_result.text,
+    snippet: contextEmbedding,
   }
 }
+
+// To populate the database, run the following:
+// await populateDatabase()
+// closeConnection()
+
+// To answer a question with RAG, run the following:
+// const chat = await newChat('Sample Chat')
+// const { response, embedding } = await answerWithRAG(
+//   chat,
+//   'How long does the visual arts BFA take to complete?'
+// )
+// console.log(response)
+// console.log(embedding)
+// closeConnection()
 
 export { populateDatabase, answerWithRAG }
