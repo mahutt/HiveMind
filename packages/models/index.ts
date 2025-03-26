@@ -3,7 +3,7 @@ export interface Message {
   role: 'user' | 'assistant'
   content: string
   timestamp: number
-  snippets?: Snippet[]
+  citations?: Citation[]
 }
 
 export interface Chat {
@@ -18,7 +18,7 @@ export interface Source {
   url: string
 }
 
-export interface Snippet {
+export interface Citation {
   id: number
   text: string
   source: Source

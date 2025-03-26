@@ -92,7 +92,8 @@ export default function Chat() {
 }
 
 function Message({ message }: { message: Message }) {
-  const { toggleSources } = useSidebar()
+  const { openSources } = useSidebar()
+  const { setActiveMessage } = useChat()
   return (
     <div
       className={`flex ${
@@ -107,10 +108,13 @@ function Message({ message }: { message: Message }) {
         }`}
       >
         {message.content}
-        {message.snippets && message.snippets.length > 0 && (
+        {message.citations && message.citations.length > 0 && (
           <button
             className="bg-black text-white rounded mx-2 px-2 cursor-pointer"
-            onClick={toggleSources}
+            onClick={() => {
+              setActiveMessage(message)
+              openSources()
+            }}
           >
             Sources
           </button>

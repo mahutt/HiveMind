@@ -7,7 +7,7 @@ import {
 import { getCompletion, getEmbedding } from './openai.js'
 import fs from 'fs/promises'
 import path from 'path'
-import type { Chat, Snippet } from 'models'
+import type { Chat, Citation } from 'models'
 
 import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
@@ -43,7 +43,7 @@ const populateDatabase = async () => {
 const answerWithRAG = async (
   chat: Chat,
   question: string
-): Promise<{ response: string; snippet: Snippet }> => {
+): Promise<{ response: string; snippet: Citation }> => {
   const savedMessage = await newMessage(chat.id, 'user', question)
   chat.messages.push(savedMessage)
 

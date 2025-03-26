@@ -1,4 +1,4 @@
-import type { Chat, Snippet, Message, Source } from 'models'
+import type { Chat, Citation, Message, Source } from 'models'
 import pg from 'pg'
 const { Client } = pg
 const connectionString = process.env.PG_CONNECTION_STRING
@@ -73,7 +73,7 @@ export const saveEmbedding = async (
   text: string,
   embedding: number[],
   metadata: any
-): Promise<Snippet> => {
+): Promise<Citation> => {
   const query = `
         INSERT INTO embedding (source_id, text, embedding, metadata)
         VALUES ($1, $2, $3, $4)
@@ -110,7 +110,7 @@ export const newMessage = async (
   chatId: number,
   role: 'user' | 'assistant',
   content: string,
-  snippets: Snippet[] = [],
+  snippets: Citation[] = [],
   timestamp: number = Date.now()
 ): Promise<Message> => {
   const query = `
@@ -147,7 +147,7 @@ export const getChat = async (chatId: number): Promise<Chat> => {
   }
 }
 
-export const getEmbedding = async (embeddingId: number): Promise<Snippet> => {
+export const getEmbedding = async (embeddingId: number): Promise<Citation> => {
   const query = `SELECT * FROM embedding WHERE id = $1;`
   const result = await client.query(query, [embeddingId])
   const embedding = result.rows[0]
@@ -189,7 +189,7 @@ export const getMessages = async (chatId: number): Promise<Message[]> => {
       role: row.role,
       content: row.content,
       timestamp: Number(row.timestamp),
-      snippets: [],
+      citations: [],
     }
     const embeddingsQuery = `
             SELECT embedding_id FROM message_embedding WHERE message_id = $1;
@@ -197,7 +197,7 @@ export const getMessages = async (chatId: number): Promise<Message[]> => {
     const embeddingsResult = await client.query(embeddingsQuery, [row.id])
     for (const embeddingRow of embeddingsResult.rows) {
       const snippet = await getEmbedding(embeddingRow.embedding_id)
-      message.snippets?.push(snippet)
+      message.citations?.push(snippet)
     }
     messages.push(message)
   }
@@ -208,7 +208,7 @@ export const getMessages = async (chatId: number): Promise<Message[]> => {
 export const vectorSearch = async (
   queryVector: number[],
   topK = 3
-): Promise<Snippet[]> => {
+): Promise<Citation[]> => {
   const searchQuery = `
       SELECT 
         id,
@@ -225,7 +225,7 @@ export const vectorSearch = async (
       `[${queryVector.join(',')}]`,
       topK,
     ])
-    const embeddings: Snippet[] = []
+    const embeddings: Citation[] = []
     for (const row of result.rows) {
       embeddings.push({
         id: row.id,
