@@ -1,4 +1,4 @@
-import type { Message } from 'models'
+import type { Chat, Message } from 'models'
 
 import OpenAI from 'openai'
 const client = new OpenAI({
@@ -38,4 +38,55 @@ export const getEmbedding = async (input: string) => {
     encoding_format: 'float',
   })
   return embedding.data[0].embedding
+}
+
+export const getNameForChat = async (chat: Chat): Promise<string | null> => {
+  const messages = chat.messages.map((message) => ({
+    role: message.role,
+    content: message.content,
+  }))
+
+  const chatString = JSON.stringify(messages)
+
+  const chatCompletion = await client.chat.completions.create({
+    messages: [
+      {
+        role: 'system',
+        content: `
+                    You are an AI assistant that names chats based on their content.
+                    Provide a concise and descriptive name for the chat based on the provided messages.`,
+      },
+      {
+        role: 'user',
+        content: `Here is the chat content: ${chatString}`,
+      },
+    ],
+    model: 'gpt-4o-mini',
+    tools: [
+      {
+        type: 'function',
+        function: {
+          name: 'setChatName',
+          description: 'Sets the name of the chat',
+          parameters: {
+            type: 'object',
+            properties: {
+              name: {
+                type: 'string',
+                description: 'The name of the chat',
+              },
+            },
+            required: ['name'],
+          },
+        },
+      },
+    ],
+  })
+
+  const toolCalls = chatCompletion.choices[0].message.tool_calls ?? []
+  if (toolCalls.length === 0) {
+    return null
+  }
+  const args = JSON.parse(toolCalls[0].function.arguments)
+  return args.name
 }

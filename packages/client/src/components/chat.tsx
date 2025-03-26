@@ -6,7 +6,7 @@ import type { Chat, Message } from 'models'
 import { useChat } from '../providers/chat-hook'
 
 export default function Chat() {
-  const { activeChat, setActiveChat, declareNewChat } = useChat()
+  const { activeChat, setActiveChat, declareNewChat, setRefresh } = useChat()
   const { toggleChatHistory, toggleSources } = useSidebar()
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(true)
@@ -14,9 +14,11 @@ export default function Chat() {
   const handleSendMessage = async () => {
     setLoading(true)
     let newChat: Chat | null = null
+    let isNew = false
 
     if (!activeChat) {
       newChat = (await api.post<Chat>('/api')).data
+      isNew = true
       declareNewChat(newChat)
     }
 
@@ -48,6 +50,19 @@ export default function Chat() {
     const updatedChat = (await response).data
     setActiveChat(updatedChat)
     setLoading(false)
+    if (isNew) {
+      api.post<string>(`/api/rename/${updatedChat.id}`).then((response) => {
+        const title = response.data
+        setActiveChat((prev) => {
+          if (!prev) return prev
+          return {
+            ...prev,
+            title: title,
+          }
+        })
+        setRefresh((prev) => !prev)
+      })
+    }
   }
 
   return (

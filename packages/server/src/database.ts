@@ -58,6 +58,24 @@ export const newSource = async (
   }
 }
 
+export const updateChatTitle = async (
+  chatId: number,
+  title: string
+): Promise<Chat> => {
+  const query = `
+        UPDATE chat
+        SET title = $2
+        WHERE id = $1
+        RETURNING *;
+    `
+  const result = await client.query(query, [chatId, title])
+  return {
+    id: result.rows[0].id,
+    title: result.rows[0].title,
+    messages: await getMessages(chatId),
+  }
+}
+
 export const getSource = async (sourceId: number): Promise<Source> => {
   const query = `SELECT * FROM source WHERE id = $1;`
   const result = await client.query(query, [sourceId])

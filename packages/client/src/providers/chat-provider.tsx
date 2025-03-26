@@ -9,6 +9,8 @@ export interface ChatState {
   setActiveMessage: React.Dispatch<React.SetStateAction<Message | null>>
   chatHistory: number[]
   declareNewChat: (chat: Chat) => void
+  refresh: boolean
+  setRefresh: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const ChatContext = createContext<ChatState | undefined>(undefined)
@@ -24,6 +26,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
     'chat-history',
     []
   )
+  const [refresh, setRefresh] = useState(true)
 
   const declareNewChat = (chat: Chat) => {
     setChatHistory((prev) => [...(prev ?? []), chat.id])
@@ -36,6 +39,8 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
     setActiveMessage,
     chatHistory,
     declareNewChat,
+    refresh,
+    setRefresh,
   }
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>

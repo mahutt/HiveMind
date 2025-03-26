@@ -5,7 +5,7 @@ import { useChat } from '../providers/chat-hook'
 import api from '../api'
 
 export default function ChatHistory() {
-  const { setActiveChat, chatHistory, setActiveMessage } = useChat()
+  const { setActiveChat, chatHistory, setActiveMessage, refresh } = useChat()
   const [searchQuery, setSearchQuery] = useState('')
   const [chats, setChats] = useState<Chat[]>([])
 
@@ -13,8 +13,10 @@ export default function ChatHistory() {
     const chatPromises = chatHistory.map((chatId) =>
       api.get<Chat>(`/api/${chatId}`).then((response) => response.data)
     )
-    Promise.all(chatPromises).then((chats) => setChats(chats))
-  }, [chatHistory])
+    Promise.all(chatPromises).then((chats) => {
+      setChats(chats)
+    })
+  }, [chatHistory, refresh])
 
   const filteredChats = searchQuery
     ? chats.filter((chat) =>
@@ -78,19 +80,25 @@ export default function ChatHistory() {
             <h3 className="text-xs font-semibold text-gray-500 mb-2 px-1 uppercase tracking-wide">
               {getFormattedDate(dateString)}
             </h3>
-            {chatsByDate[dateString].map((chat) => (
-              <div
-                key={chat.id}
-                onClick={async () => {
-                  const response = await api.get<Chat>(`/api/${chat.id}`)
-                  setActiveMessage(null)
-                  setActiveChat(response.data)
-                }}
-                className="bg-white rounded-lg p-2 mb-1 cursor-pointer hover:bg-gray-50 transition-colors shadow-sm h-12 flex items-center"
-              >
-                <p className="text-sm truncate">{chat.title}</p>
-              </div>
-            ))}
+            {chatsByDate[dateString]
+              .sort(
+                (a, b) =>
+                  b.messages.slice(-1)[0].timestamp -
+                  a.messages.slice(-1)[0].timestamp
+              )
+              .map((chat) => (
+                <div
+                  key={chat.id}
+                  onClick={async () => {
+                    const response = await api.get<Chat>(`/api/${chat.id}`)
+                    setActiveMessage(null)
+                    setActiveChat(response.data)
+                  }}
+                  className="bg-white rounded-lg p-2 mb-1 cursor-pointer hover:bg-gray-50 transition-colors shadow-sm h-12 flex items-center"
+                >
+                  <p className="text-sm truncate">{chat.title}</p>
+                </div>
+              ))}
           </div>
         ))}
       </div>
