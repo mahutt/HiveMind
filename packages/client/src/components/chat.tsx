@@ -1,15 +1,16 @@
 import { useState } from 'react'
-import { Send } from 'lucide-react'
+import { ArrowUp, PanelLeft, SquarePen } from 'lucide-react'
 import api from '../api'
 import { useSidebar } from '../providers/sidebar-hook'
 import type { Chat, Message } from 'models'
 import { useChat } from '../providers/chat-hook'
+import { Button } from './ui/button'
 
 export default function Chat() {
   const { activeChat, setActiveChat, declareNewChat, setRefresh } = useChat()
-  const { toggleChatHistory, toggleSources } = useSidebar()
+  const { toggleChatHistory, toggleSources, isSourcesOpen } = useSidebar()
   const [newMessage, setNewMessage] = useState('')
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
   const handleSendMessage = async () => {
     setLoading(true)
@@ -70,23 +71,26 @@ export default function Chat() {
       {/* Chat Header */}
       <div className="flex flex-row justify-between p-4">
         <div className="felx flex-row gap-2">
-          <button onClick={toggleChatHistory}>Toggle Chat History</button>
-          <button
-            className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors"
+          <Button variant="ghost" onClick={toggleChatHistory}>
+            <PanelLeft />
+          </Button>
+          <Button
+            variant="ghost"
             onClick={() => {
               setActiveChat(null)
               setNewMessage('')
             }}
           >
-            +
-          </button>
+            <SquarePen />
+          </Button>
         </div>
         <div className="font-semibold text-lg">
           {activeChat?.title ?? 'Blank Chat'}
         </div>
-        <button onClick={toggleSources}>Toggle Sources</button>
+        <Button variant="outline" onClick={toggleSources}>
+          {isSourcesOpen ? 'Hide Sources' : 'Show Sources'}
+        </Button>
       </div>
-
       {/* Messages Container */}
       <div className="w-full max-w-xl mx-auto flex-grow overflow-y-auto p-4 space-y-4">
         {activeChat?.messages.map((message) => (
@@ -100,7 +104,7 @@ export default function Chat() {
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+          onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
           placeholder="Type a message..."
           className="flex-grow p-2 rounded-lg focus:outline-none"
         />
@@ -111,7 +115,7 @@ export default function Chat() {
             loading ? 'opacity-50' : 'opacity-100'
           }`}
         >
-          <Send size={20} />
+          <ArrowUp />
         </button>
       </div>
     </div>
