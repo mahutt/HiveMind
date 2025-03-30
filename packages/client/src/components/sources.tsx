@@ -20,24 +20,37 @@ export default function Sources() {
   const sources = activeChat ? extractUniqueSources(activeChat) : []
 
   return (
-    <div className="h-full bg-gray-500 rounded-l-xl p-4 text-white space-y-4">
-      <div>
-        <h2 className="text-xl font-medium mb-3">Message Source(s)</h2>
-        <div className="flex flex-col gap-2">
-          {activeMessage?.citations?.map((citation) => (
-            <SourceCard key={citation.id} citation={citation} />
-          ))}
-        </div>
-      </div>
+    <div className="h-full bg-gray-200 rounded-l-lg px-6 pt-6 text-white space-y-4">
+      {sources.length === 0 && (
+        <>
+          <h2 className="text-gray-500 mb-2">Conversation Sources</h2>
+          <p className="text-md text-gray-500 my-6">
+            Start chatting to see where HiveMind gets its information from...
+          </p>
+        </>
+      )}
 
-      <div>
-        <h2 className="text-xl font-medium mb-3">All Conversation Sources</h2>
-        <div className="flex flex-col gap-2">
-          {sources.map((source) => (
-            <SourceLink key={source.id} url={source.url} />
-          ))}
+      {activeMessage && activeMessage.citations?.length !== 0 && (
+        <div>
+          <h2 className="text-gray-500 mb-2">Selected Message Sources</h2>
+          <div className="flex flex-col gap-2">
+            {activeMessage?.citations?.map((citation) => (
+              <SourceLink key={citation.source.id} url={citation.source.url} />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {sources.length > 0 && (
+        <div>
+          <h2 className="text-gray-500 mb-2">All Conversation Sources</h2>
+          <div className="flex flex-col gap-2">
+            {sources.map((source) => (
+              <SourceLink key={source.id} url={source.url} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -46,37 +59,33 @@ function stripUrlProtocol(url: string) {
   return url.replace(/(^\w+:|^)\/\//, '')
 }
 
-function SourceCard({ citation }: { citation: Citation }) {
-  return (
-    <a href={citation.source.url} target="_blank" rel="noopener noreferrer">
-      <div className="bg-gray-200 rounded-md p-4 text-gray-800">
-        <p className="mb-4 italic">
-          <span>{citation.text.slice(0, 100)}...</span>
-        </p>
-
-        <div className="flex justify-between items-center text-sm font-medium">
-          <div className="flex-1 flex items-center">
-            <span className="w-4 h-4 bg-red-800 rounded-full mr-2"></span>
-            <div className="flex-1">
-              {stripUrlProtocol(citation.source.url)}
-            </div>
-          </div>
-          <MoveUpRight className="h-4 w-4 ml-1" />
-        </div>
-      </div>
-    </a>
-  )
-}
+// function SourceCard({ citation }: { citation: Citation }) {
+//   return (
+//     <a href={citation.source.url} target="_blank" rel="noopener noreferrer">
+//       <div className="bg-white rounded-md p-4 text-gray-800">
+//         <div className="flex justify-between items-center text-sm font-medium">
+//           <div className="flex-1 flex items-center">
+//             <span className="w-4 h-4 bg-red-800 rounded-full mr-2"></span>
+//             <div className="flex-1">
+//               {stripUrlProtocol(citation.source.url)}
+//             </div>
+//           </div>
+//           <MoveUpRight className="h-4 w-4 ml-1" />
+//         </div>
+//       </div>
+//     </a>
+//   )
+// }
 
 function SourceLink({ url }: { url: string }) {
   return (
     <a href={url} target="_blank" rel="noopener noreferrer">
-      <div className="bg-gray-200 text-gray-800 rounded-md p-4 flex justify-between items-center text-sm font-medium">
-        <div className="flex-1 flex items-center">
-          <span className="w-4 h-4 bg-red-800 rounded-full mr-2"></span>
-          <div className="flex-1">{stripUrlProtocol(url)}</div>
+      <div className="text-black bg-white rounded-lg px-3 py-2">
+        <div className="flex items-center gap-2">
+          <span className="min-w-4 h-4 bg-red-800 rounded-full"></span>
+          <div className="truncate">{stripUrlProtocol(url)}</div>
+          <MoveUpRight className="min-w-4 h-4 ml-1" />
         </div>
-        <MoveUpRight className="h-4 w-4 ml-1" />
       </div>
     </a>
   )

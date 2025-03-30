@@ -1,5 +1,5 @@
 import { Chat, Message } from 'models'
-import React, { createContext, useState, ReactNode } from 'react'
+import React, { createContext, useState, ReactNode, useEffect } from 'react'
 import useLocalStorage from 'use-local-storage'
 
 export interface ChatState {
@@ -31,6 +31,10 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const declareNewChat = (chat: Chat) => {
     setChatHistory((prev) => [...(prev ?? []), chat.id])
   }
+
+  useEffect(() => {
+    setActiveMessage(null)
+  }, [activeChat])
 
   const value: ChatState = {
     activeChat,

@@ -60,7 +60,7 @@ export default function ChatHistory() {
   }
 
   return (
-    <div className="h-full bg-gray-200 flex flex-col">
+    <div className="h-full bg-gray-200 flex flex-col rounded-r-lg">
       <div className="p-2">
         <div className="flex items-center bg-white rounded-lg px-3 py-2 shadow-sm">
           <Search className="w-4 h-4 text-gray-400" />
