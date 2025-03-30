@@ -27,6 +27,7 @@ export default function ChatHistory() {
 
   const chatsByDate = filteredChats.reduce(
     (acc: { [key: string]: Chat[] }, chat) => {
+      if (chat.messages.length === 0) return acc
       const timestamp = chat.messages.slice(-1)[0].timestamp
       const dateString = new Date(timestamp).toDateString()
       if (!acc[dateString]) {

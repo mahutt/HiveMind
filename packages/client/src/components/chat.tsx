@@ -97,26 +97,18 @@ export default function Chat() {
           <Message key={message.id} message={message} />
         ))}
       </div>
-
-      {/* Message Input */}
-      <div className="w-full max-w-xl mx-auto p-4 border-t flex items-center space-x-2">
-        <input
-          type="text"
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-          placeholder="Type a message..."
-          className="flex-grow p-2 rounded-lg focus:outline-none"
+      <div
+        className={`${
+          !activeChat || activeChat.messages.length === 0 ? 'h-full' : ''
+        } flex items-center justify-center p-4`}
+      >
+        <MessageInput
+          message={newMessage}
+          setMessage={setNewMessage}
+          loading={loading}
+          setLoading={setLoading}
+          handleSendMessage={handleSendMessage}
         />
-        <button
-          onClick={handleSendMessage}
-          disabled={loading}
-          className={`bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors ${
-            loading ? 'opacity-50' : 'opacity-100'
-          }`}
-        >
-          <ArrowUp />
-        </button>
       </div>
     </div>
   )
@@ -151,6 +143,42 @@ function Message({ message }: { message: Message }) {
           </button>
         )}
       </div>
+    </div>
+  )
+}
+
+function MessageInput({
+  message,
+  setMessage,
+  loading,
+  setLoading,
+  handleSendMessage,
+}: {
+  message: string
+  setMessage: (message: string) => void
+  loading: boolean
+  setLoading: (loading: boolean) => void
+  handleSendMessage: () => void
+}) {
+  return (
+    <div className="w-full max-w-xl mx-auto p-4 flex items-center space-x-2 rounded-[28px] border shadow-sm sm:shadow-lg">
+      <input
+        type="text"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+        placeholder="Type a message..."
+        className="flex-grow p-2 rounded-lg focus:outline-none"
+      />
+      <button
+        onClick={handleSendMessage}
+        disabled={loading}
+        className={`bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors ${
+          loading ? 'opacity-50' : 'opacity-100'
+        }`}
+      >
+        <ArrowUp />
+      </button>
     </div>
   )
 }
