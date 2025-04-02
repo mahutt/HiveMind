@@ -3,6 +3,7 @@ import SidebarContainer from './components/sidebar-container'
 import ChatHistory from './components/chat-history'
 import Chat from './components/chat'
 import Sources from './components/sources'
+import BlurLayer from './components/blur-layer'
 
 function App() {
   const { isChatHistoryOpen, isSourcesOpen } = useSidebar()
@@ -12,7 +13,8 @@ function App() {
         <SidebarContainer isOpen={isChatHistoryOpen} absolutePosition="left">
           <ChatHistory />
         </SidebarContainer>
-        <div className="flex-1 h-full">
+        <div className="relative flex-1 h-full">
+          <BlurLayer />
           <Chat />
         </div>
         <SidebarContainer isOpen={isSourcesOpen} absolutePosition="right">
