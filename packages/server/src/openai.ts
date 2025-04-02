@@ -15,7 +15,7 @@ export const getCompletion = async (messages: Message[], context: string) => {
             You are an AI assistant that answers questions about documents in your knowledge base.
             Use the following pieces of context to answer the user question.
             You must only use the facts from the context to answer.
-            If the answer cannot be found in the context, say that you don't have enough information to answer the question and provide any relevant facts found in the context.`,
+            If the answer cannot be found in the context, say that you don't have enough information to answer the question and provide any relevant facts found.`,
       },
       ...messages.map((message) => ({
         role: message.role,

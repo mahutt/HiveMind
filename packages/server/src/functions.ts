@@ -8,6 +8,7 @@ import { getCompletion, getEmbedding } from './openai.js'
 import fs from 'fs/promises'
 import path from 'path'
 import type { Chat, Citation } from 'models'
+import { closeConnection } from './database.js'
 
 import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
@@ -16,7 +17,7 @@ const __dirname = path.dirname(__filename)
 const populateDatabase = async () => {
   try {
     const data = await fs.readFile(
-      path.join(__dirname, '..', 'assets', 'sample-sources.json'),
+      path.join(__dirname, '..', 'assets', 'chunks.json'),
       'utf8'
     )
     const programs = JSON.parse(data)
@@ -49,8 +50,13 @@ const answerWithRAG = async (
 
   const query_embedding = await getEmbedding(question)
   const results = await vectorSearch(query_embedding)
+  const context = results.map((result) => ({
+    text: result.text,
+    source: result.source,
+  }))
   const contextEmbedding = results[0]
-  const response = await getCompletion(chat.messages, contextEmbedding.text)
+  contextEmbedding.source.url += `#${results[1].source.url}`
+  const response = await getCompletion(chat.messages, JSON.stringify(context))
   return {
     response: response ?? '<No response generated>',
     snippet: contextEmbedding,
@@ -58,8 +64,8 @@ const answerWithRAG = async (
 }
 
 // To populate the database, run the following:
-// await populateDatabase()
-// closeConnection()
+// await populateDatabase();
+// closeConnection();
 
 // To answer a question with RAG, run the following:
 // const chat = await newChat('Sample Chat')
