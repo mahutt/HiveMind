@@ -34,8 +34,12 @@ export default function Sources() {
         <div>
           <h2 className="text-gray-500 mb-2">Selected Message Sources</h2>
           <div className="flex flex-col gap-2">
-            {activeMessage?.citations?.map((citation) => (
-              <SourceLink key={citation.source.id} url={citation.source.url} />
+            {[
+              ...new Set(
+                activeMessage?.citations?.map((citation) => citation.source.url)
+              ),
+            ].map((url) => (
+              <SourceLink key={url} url={url} />
             ))}
           </div>
         </div>
