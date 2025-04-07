@@ -1,9 +1,10 @@
-import { Search } from 'lucide-react'
+import { Search, Trash } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Chat } from 'models'
 import { useChat } from '../providers/chat-hook'
 import api from '../api'
 import { LanguageSelector } from './language-selector'
+import { Button } from './ui/button'
 
 export default function ChatHistory() {
   const { setActiveChat, chatHistory, setActiveMessage, refresh } = useChat()
@@ -73,7 +74,6 @@ export default function ChatHistory() {
           />
         </div>
       </div>
-
       <div className="flex-1 overflow-y-auto px-2 pb-2">
         <div className="h-4"></div>
 
@@ -103,11 +103,33 @@ export default function ChatHistory() {
               ))}
           </div>
         ))}
+        <div className="flex-1">
+          <DeleteChatHistoryButton />
+        </div>
       </div>
-
       <div className="p-2">
         <LanguageSelector />
       </div>
+    </div>
+  )
+}
+
+function DeleteChatHistoryButton() {
+  const { chatHistory, clearChatHistory, setActiveChat } = useChat()
+  if (chatHistory.length === 0) return null
+  return (
+    <div className="flex items-center justify-center">
+      <Button
+        className="text-gray-500 hover:text-red-500"
+        variant="ghost"
+        onClick={() => {
+          clearChatHistory()
+          setActiveChat(null)
+        }}
+      >
+        <Trash />
+        Clear History
+      </Button>
     </div>
   )
 }
