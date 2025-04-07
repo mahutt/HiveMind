@@ -10,7 +10,7 @@ export default function SidebarContainer({ ...props }: SidebarContainerProps) {
   const position = absolutePosition === 'left' ? 'left-0' : 'right-0'
   return (
     <div
-      className={`absolute ${position} z-10 inset-y-0 sm:relative overflow-hidden transition-all duration-200 ${
+      className={`absolute ${position} z-20 inset-y-0 sm:relative overflow-hidden transition-all duration-200 ${
         isOpen ? 'w-[300px]' : 'w-0'
       }`}
       {...rest}

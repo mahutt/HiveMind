@@ -15,7 +15,7 @@ export default function BlurLayer() {
 
   return (
     <div
-      className="absolute inset-0 backdrop-blur-[2px]"
+      className="absolute inset-0 backdrop-blur-[2px] z-10"
       onClick={() => {
         if (isChatHistoryOpen) {
           closeChatHistory()
