@@ -5,6 +5,7 @@ import { useSidebar } from '../providers/sidebar-hook'
 import type { Chat, Message } from 'models'
 import { useChat } from '../providers/chat-hook'
 import { Button } from './ui/button'
+import MessageLoader from './message-loader'
 
 export default function Chat() {
   const { activeChat, setActiveChat, declareNewChat, setRefresh } = useChat()
@@ -93,9 +94,12 @@ export default function Chat() {
       </div>
       {/* Messages Container */}
       <div className="w-full max-w-xl mx-auto flex-grow overflow-y-auto p-4 space-y-4">
-        {activeChat?.messages.map((message) => (
-          <Message key={message.id} message={message} />
-        ))}
+        <>
+          {activeChat?.messages.map((message) => (
+            <Message key={message.id} message={message} />
+          ))}
+          {loading && <MessageLoader />}
+        </>
       </div>
       <div
         className={`${
