@@ -1,9 +1,9 @@
 import { TrendingUp } from 'lucide-react'
 
 const TRENDING_PROMPTS = [
-  'What is the meaning of life?',
-  'How to make a perfect cup of coffee?',
-  'What are the best practices for remote work?',
+  'How do I build my course schedule?',
+  'How can I make friends on campus?',
+  'What is the deadline to add and drop classes?',
 ]
 
 export default function TrendingPrompts({
