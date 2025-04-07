@@ -103,7 +103,7 @@ export default function Chat() {
         </>
       </div>
       <div
-        className={`absolute left-0 right-0 w-full transition-all duration-500 ease-in-out ${
+        className={`absolute left-0 right-0 w-full transition-all duration-300 ease-in-out ${
           !activeChat || activeChat.messages.length === 0
             ? 'bottom-1/2 translate-y-1/2'
             : 'bottom-0'
@@ -120,7 +120,7 @@ export default function Chat() {
         </div>
         <TrendingPrompts
           callback={(prompt) => setNewMessage(prompt)}
-          visible={newMessage.length === 0}
+          visible={newMessage.length === 0 && !activeChat}
         />
       </div>
     </div>
