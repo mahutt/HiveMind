@@ -68,7 +68,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="relative flex flex-col h-full">
       {/* Chat Header */}
       <div className="flex flex-row justify-between p-4">
         <div className="felx flex-row gap-2">
@@ -93,7 +93,7 @@ export default function Chat() {
         </Button>
       </div>
       {/* Messages Container */}
-      <div className="w-full max-w-xl mx-auto flex-grow overflow-y-auto p-4 space-y-4">
+      <div className="w-full flex-grow overflow-y-auto p-4 space-y-4 pb-30">
         <>
           {activeChat?.messages.map((message) => (
             <Message key={message.id} message={message} />
@@ -102,17 +102,21 @@ export default function Chat() {
         </>
       </div>
       <div
-        className={`${
-          !activeChat || activeChat.messages.length === 0 ? 'h-full' : ''
-        } flex items-center justify-center p-4`}
+        className={`absolute left-0 right-0 w-full transition-all duration-500 ease-in-out ${
+          !activeChat || activeChat.messages.length === 0
+            ? 'bottom-1/2 translate-y-1/2'
+            : 'bottom-0'
+        }`}
       >
-        <MessageInput
-          message={newMessage}
-          setMessage={setNewMessage}
-          loading={loading}
-          setLoading={setLoading}
-          handleSendMessage={handleSendMessage}
-        />
+        <div className={`flex items-center justify-center p-4`}>
+          <MessageInput
+            message={newMessage}
+            setMessage={setNewMessage}
+            loading={loading}
+            setLoading={setLoading}
+            handleSendMessage={handleSendMessage}
+          />
+        </div>
       </div>
     </div>
   )
@@ -125,10 +129,10 @@ function Message({ message }: { message: Message }) {
     <div
       className={`flex ${
         message.role === 'user' ? 'justify-end' : 'justify-start'
-      }`}
+      } max-w-xl mx-auto`}
     >
       <div
-        className={`max-w-[75%] p-3 rounded-lg ${
+        className={`relative max-w-[75%] p-3 rounded-lg ${
           message.role === 'user'
             ? 'bg-blue-500 text-white'
             : 'bg-gray-200 text-black'
@@ -136,15 +140,17 @@ function Message({ message }: { message: Message }) {
       >
         {message.content}
         {message.citations && message.citations.length > 0 && (
-          <button
-            className="bg-black text-white rounded mx-2 px-2 cursor-pointer"
-            onClick={() => {
-              setActiveMessage(message)
-              openSources()
-            }}
-          >
-            Sources
-          </button>
+          <div className="absolute -bottom-2 -right-2 flex items-center space-x-2">
+            <button
+              className="text-sm bg-black text-white rounded-lg px-2 py-[1px] cursor-pointer"
+              onClick={() => {
+                setActiveMessage(message)
+                openSources()
+              }}
+            >
+              Sources
+            </button>
+          </div>
         )}
       </div>
     </div>
@@ -165,7 +171,7 @@ function MessageInput({
   handleSendMessage: () => void
 }) {
   return (
-    <div className="w-full max-w-xl mx-auto p-4 flex items-center space-x-2 rounded-[28px] border shadow-sm sm:shadow-lg">
+    <div className="w-full max-w-xl mx-auto p-4 flex items-center space-x-2 rounded-[28px] border shadow-sm sm:shadow-lg bg-white">
       <input
         type="text"
         value={message}

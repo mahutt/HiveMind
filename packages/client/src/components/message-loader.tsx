@@ -9,7 +9,7 @@ export default function MessageLoader() {
   }, [])
 
   return (
-    <div className="flex justify-start">
+    <div className="max-w-xl mx-auto flex justify-start">
       <div
         className={`
           max-w-[75%] 
