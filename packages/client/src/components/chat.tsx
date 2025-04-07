@@ -6,6 +6,7 @@ import type { Chat, Message } from 'models'
 import { useChat } from '../providers/chat-hook'
 import { Button } from './ui/button'
 import MessageLoader from './message-loader'
+import TrendingPrompts from './trending-prompts'
 
 export default function Chat() {
   const { activeChat, setActiveChat, declareNewChat, setRefresh } = useChat()
@@ -117,6 +118,10 @@ export default function Chat() {
             handleSendMessage={handleSendMessage}
           />
         </div>
+        <TrendingPrompts
+          callback={(prompt) => setNewMessage(prompt)}
+          visible={newMessage.length === 0}
+        />
       </div>
     </div>
   )
