@@ -55,11 +55,19 @@ export const getResponse = async (
         },
       ]
     : []
+
+  const currentDateString = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+
   const chatCompletion = await client.chat.completions.create({
     messages: [
       {
         role: 'system',
         content: `
+            The current date is ${currentDateString}.
             You are a RAG AI assistant that answers questions about documents in your Concordia University knowledge base.
             You are expected use the file_search tool, if it is available, which attempts to retrieve content by embedding the query paramater and then performing a similarity search.
             You must only use the facts from retrieved context to answer questions.
