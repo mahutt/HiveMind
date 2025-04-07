@@ -1,14 +1,7 @@
-import {
-  saveEmbedding,
-  vectorSearch,
-  newMessage,
-  newSource,
-} from './database.js'
-import { getCompletion, getEmbedding } from './openai.js'
+import { saveEmbedding, newSource } from './database.js'
+import { getEmbedding } from './openai.js'
 import fs from 'fs/promises'
 import path from 'path'
-import type { Chat, Citation } from 'models'
-import { closeConnection } from './database.js'
 
 import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
@@ -41,40 +34,8 @@ const populateDatabase = async () => {
   }
 }
 
-const answerWithRAG = async (
-  chat: Chat,
-  question: string
-): Promise<{ response: string; snippet: Citation }> => {
-  const savedMessage = await newMessage(chat.id, 'user', question)
-  chat.messages.push(savedMessage)
-
-  const query_embedding = await getEmbedding(question)
-  const results = await vectorSearch(query_embedding)
-  const context = results.map((result) => ({
-    text: result.text,
-    source: result.source,
-  }))
-  const contextEmbedding = results[0]
-  contextEmbedding.source.url += `#${results[1].source.url}`
-  const response = await getCompletion(chat.messages, JSON.stringify(context))
-  return {
-    response: response ?? '<No response generated>',
-    snippet: contextEmbedding,
-  }
-}
-
 // To populate the database, run the following:
 // await populateDatabase();
 // closeConnection();
 
-// To answer a question with RAG, run the following:
-// const chat = await newChat('Sample Chat')
-// const { response, embedding } = await answerWithRAG(
-//   chat,
-//   'How long does the visual arts BFA take to complete?'
-// )
-// console.log(response)
-// console.log(embedding)
-// closeConnection()
-
-export { populateDatabase, answerWithRAG }
+export { populateDatabase }

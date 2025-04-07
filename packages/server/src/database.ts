@@ -225,6 +225,7 @@ export const getMessages = async (chatId: number): Promise<Message[]> => {
 
 export const vectorSearch = async (
   queryVector: number[],
+  excludeIds: number[] = [],
   topK = 3
 ): Promise<Citation[]> => {
   const searchQuery = `
@@ -235,6 +236,7 @@ export const vectorSearch = async (
         metadata,
         1 - (embedding <=> $1) as score
       FROM embedding
+      WHERE id != ALL($3::int[])
       ORDER BY score DESC
       LIMIT $2;
     `
@@ -242,6 +244,7 @@ export const vectorSearch = async (
     const result = await client.query(searchQuery, [
       `[${queryVector.join(',')}]`,
       topK,
+      excludeIds,
     ])
     const embeddings: Citation[] = []
     for (const row of result.rows) {
@@ -257,7 +260,6 @@ export const vectorSearch = async (
     return []
   }
 }
-
 export const closeConnection = async () => {
   await client.end()
 }

@@ -1,9 +1,10 @@
 import 'dotenv/config'
 import figlet from 'figlet'
 import { createChat, getChat, newMessage, updateChatTitle } from './database'
-import { answerWithRAG } from './functions'
+
 import type { Chat } from 'models'
 import { getNameForChat } from './openai'
+import { converse } from './controllers/chat-controller'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -35,14 +36,9 @@ const server = Bun.serve({
       POST: async (req) => {
         const { chatId } = req.params
         const { message: userMessage } = await req.json()
-
-        let chat: Chat | null = await getChat(Number(chatId))
+        const chat = await converse(userMessage, Number(chatId))
         if (chat === null)
           return new Response('Chat not found', { status: 404 })
-
-        const { response, snippet } = await answerWithRAG(chat, userMessage)
-        await newMessage(Number(chatId), 'assistant', response, [snippet])
-        chat = await getChat(Number(chatId))
         return Response.json(chat, {
           headers: corsHeaders,
         })
