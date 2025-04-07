@@ -7,6 +7,7 @@ import { useChat } from '../providers/chat-hook'
 import { Button } from './ui/button'
 import MessageLoader from './message-loader'
 import TrendingPrompts from './trending-prompts'
+import ReactMarkdown from 'react-markdown'
 
 export default function Chat() {
   const { activeChat, setActiveChat, declareNewChat, setRefresh } = useChat()
@@ -143,7 +144,7 @@ function Message({ message }: { message: Message }) {
             : 'bg-gray-200 text-black'
         }`}
       >
-        {message.content}
+        <ReactMarkdown>{message.content}</ReactMarkdown>
         {message.citations && message.citations.length > 0 && (
           <div className="absolute -bottom-2 -right-2 flex items-center space-x-2">
             <button
