@@ -1,6 +1,6 @@
 import { MoveUpRight } from 'lucide-react'
 import { useChat } from '../providers/chat-hook'
-import { Chat, Citation, Source } from 'models'
+import { Chat, Message, Source } from 'models'
 
 function extractUniqueSources(chat: Chat): Source[] {
   const uniqueSourcesMap = new Map<string, Source>()
@@ -11,6 +11,16 @@ function extractUniqueSources(chat: Chat): Source[] {
       })
     }
   })
+  return Array.from(uniqueSourcesMap.values())
+}
+
+function extractUniqueSourcesFromMessage(message: Message): Source[] {
+  const uniqueSourcesMap = new Map<string, Source>()
+  if (message.citations) {
+    message.citations.forEach((citation) => {
+      uniqueSourcesMap.set(`${citation.source.id}`, citation.source)
+    })
+  }
   return Array.from(uniqueSourcesMap.values())
 }
 
@@ -34,12 +44,12 @@ export default function Sources() {
         <div>
           <h2 className="text-gray-500 mb-2">Selected Message Sources</h2>
           <div className="flex flex-col gap-2">
-            {[
-              ...new Set(
-                activeMessage?.citations?.map((citation) => citation.source.url)
-              ),
-            ].map((url) => (
-              <SourceLink key={url} url={url} />
+            {extractUniqueSourcesFromMessage(activeMessage).map((source) => (
+              <SourceLink
+                key={source.url}
+                url={source.url}
+                title={source.title}
+              />
             ))}
           </div>
         </div>
@@ -50,7 +60,11 @@ export default function Sources() {
           <h2 className="text-gray-500 mb-2">All Conversation Sources</h2>
           <div className="flex flex-col gap-2">
             {sources.map((source) => (
-              <SourceLink key={source.id} url={source.url} />
+              <SourceLink
+                key={source.id}
+                url={source.url}
+                title={source.title}
+              />
             ))}
           </div>
         </div>
@@ -59,9 +73,9 @@ export default function Sources() {
   )
 }
 
-function stripUrlProtocol(url: string) {
-  return url.replace(/(^\w+:|^)\/\//, '')
-}
+// function stripUrlProtocol(url: string) {
+//   return url.replace(/(^\w+:|^)\/\//, '')
+// }
 
 // function SourceCard({ citation }: { citation: Citation }) {
 //   return (
@@ -81,13 +95,13 @@ function stripUrlProtocol(url: string) {
 //   )
 // }
 
-function SourceLink({ url }: { url: string }) {
+function SourceLink({ url, title }: { url: string; title: string }) {
   return (
     <a href={url} target="_blank" rel="noopener noreferrer">
       <div className="text-black bg-white rounded-lg px-3 py-2">
         <div className="flex items-center gap-2">
           <span className="min-w-4 h-4 bg-red-800 rounded-full"></span>
-          <div className="truncate">{stripUrlProtocol(url)}</div>
+          <div className="truncate">{title}</div>
           <MoveUpRight className="min-w-4 h-4 ml-1" />
         </div>
       </div>
