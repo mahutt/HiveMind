@@ -6,6 +6,7 @@ import { useSidebar } from "../providers/sidebar-hook";
 import api from "../api";
 import { LanguageSelector } from "./language-selector";
 import { Button } from "./ui/button";
+import "../scrollbar.css";
 
 export default function ChatHistory() {
   const { setActiveChat, chatHistory, setActiveMessage, refresh } = useChat();
@@ -64,6 +65,7 @@ export default function ChatHistory() {
 
   return (
     <div className="h-full bg-[rgb(145,35,56)] flex flex-col rounded-r-sm">
+      {/* Search bar - keep as is */}
       <div className="p-2">
         <div className="flex items-center bg-white rounded-sm px-3 py-2 shadow-sm">
           <Search className="w-4 h-4 text-gray-400" />
@@ -76,7 +78,9 @@ export default function ChatHistory() {
           />
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto px-2 pb-">
+
+      {/* Main scrollable area - make it take up all available space */}
+      <div className="flex-grow overflow-y-auto px-2 pb-2 custom-scrollbar">
         <div className="h-4"></div>
 
         {sortedDates.map((dateString) => (
@@ -108,9 +112,9 @@ export default function ChatHistory() {
               ))}
           </div>
         ))}
-        <div className="flex-1">
-          <DeleteChatHistoryButton />
-        </div>
+      </div>
+      <div className="mt-auto pt-4 pb-2">
+        <DeleteChatHistoryButton />
       </div>
       <div className="p-2">
         <LanguageSelector />
