@@ -4,11 +4,13 @@ import ChatHistory from './components/chat-history'
 import Chat from './components/chat'
 import Sources from './components/sources'
 import BlurLayer from './components/blur-layer'
+import DisclaimerModal from './components/disclaimer-modal'
 
 function App() {
   const { isChatHistoryOpen, isSourcesOpen } = useSidebar()
   return (
     <>
+      <DisclaimerModal />
       <div className="relative flex flex-row h-screen">
         <SidebarContainer isOpen={isChatHistoryOpen} absolutePosition="left">
           <ChatHistory />
