@@ -30,7 +30,7 @@ export default function Sources() {
   const sources = activeChat ? extractUniqueSources(activeChat) : []
 
   return (
-    <div className="h-full bg-gray-200 rounded-l-lg px-6 pt-6 text-white space-y-4">
+    <div className="h-full bg-gray-200 rounded-l-lg px-6 py-6 text-white space-y-4 overflow-y-auto">
       {sources.length === 0 && (
         <>
           <h2 className="text-gray-500 mb-2">Conversation Sources</h2>
@@ -101,7 +101,7 @@ function SourceLink({ url, title }: { url: string; title: string }) {
       <div className="text-black bg-white rounded-lg px-3 py-2">
         <div className="flex items-center gap-2">
           <span className="min-w-4 h-4 bg-red-800 rounded-full"></span>
-          <div className="truncate">{title}</div>
+          <div className="flex-1 truncate">{title}</div>
           <MoveUpRight className="min-w-4 h-4 ml-1" />
         </div>
       </div>
