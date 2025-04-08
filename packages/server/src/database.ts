@@ -37,6 +37,12 @@ await (async () => {
             message_id INTEGER REFERENCES message(id),
             embedding_id INTEGER REFERENCES embedding(id)
         );
+        CREATE TABLE IF NOT EXISTS story_source (
+            id SERIAL PRIMARY KEY,
+            chat_id INTEGER REFERENCES chat(id),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            sources JSONB DEFAULT '{}' 
+        );
     `
   await client.query(ddl)
 })()
@@ -200,6 +206,7 @@ export const getMessages = async (chatId: number): Promise<Message[]> => {
   const query = `SELECT * FROM message WHERE chat_id = $1 ORDER BY timestamp ASC;`
   const result = await client.query(query, [chatId])
   const messages: Message[] = []
+  const indexedSources: { [sourceId: number]: number } = {};
 
   for (const row of result.rows) {
     const message: Message = {
@@ -209,14 +216,38 @@ export const getMessages = async (chatId: number): Promise<Message[]> => {
       timestamp: Number(row.timestamp),
       citations: [],
     }
-    const embeddingsQuery = `
-            SELECT embedding_id FROM message_embedding WHERE message_id = $1;
-        `
+     const embeddingsQuery = `
+      SELECT 
+        embedding.id, 
+        embedding.text, 
+        source.id as source_id,
+        source.title,
+        source.url
+      FROM embedding 
+      JOIN source ON embedding.source_id = source.id
+      JOIN message_embedding ON embedding.id = message_embedding.embedding_id
+      WHERE message_embedding.message_id = $1;
+    `
     const embeddingsResult = await client.query(embeddingsQuery, [row.id])
-    for (const embeddingRow of embeddingsResult.rows) {
-      const snippet = await getEmbedding(embeddingRow.embedding_id)
-      message.citations?.push(snippet)
-    }
+
+    message.citations = embeddingsResult.rows.map(embRow => {
+      // Assign index if not already indexed
+      if (!(embRow.source_id in indexedSources)) {
+        indexedSources[embRow.source_id] = Object.keys(indexedSources).length + 1;
+      }
+
+      return {
+        id: embRow.id,
+        text: embRow.text,
+        source: {
+          id: embRow.source_id,
+          title: embRow.title,
+          url: embRow.url,
+          index: indexedSources[embRow.source_id]
+        }
+      };
+    });
+
     messages.push(message)
   }
 
@@ -263,3 +294,26 @@ export const vectorSearch = async (
 export const closeConnection = async () => {
   await client.end()
 }
+
+export const createStorySource = async (chatId: number): Promise<void> => {
+  // Alter the source table to add chat_index column if not exists
+  const query = `
+    ALTER TABLE source 
+    ADD COLUMN IF NOT EXISTS chat_index INTEGER;
+  `;
+  await client.query(query);
+
+  // Reset indices for sources in this chat
+  const resetQuery = `
+    UPDATE source 
+    SET chat_index = NULL 
+    WHERE id IN (
+      SELECT DISTINCT source_id 
+      FROM embedding 
+      JOIN message_embedding ON embedding.id = message_embedding.embedding_id 
+      JOIN message ON message_embedding.message_id = message.id 
+      WHERE message.chat_id = $1
+    );
+  `;
+  await client.query(resetQuery, [chatId]);
+};

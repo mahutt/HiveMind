@@ -11,7 +11,13 @@ import ReactMarkdown from "react-markdown";
 import TextareaAutosize from "react-textarea-autosize";
 
 export default function Chat() {
-  const { activeChat, setActiveChat, declareNewChat, setRefresh } = useChat();
+  const {
+    activeChat,
+    setActiveChat,
+    declareNewChat,
+    setRefresh,
+    setExpandedSourceIndex,
+  } = useChat();
   const { toggleChatHistory, toggleSources, isSourcesOpen } = useSidebar();
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -100,7 +106,11 @@ export default function Chat() {
       <div className="w-full flex-grow overflow-y-auto p-4 space-y-4 pb-30">
         <>
           {activeChat?.messages.map((message) => (
-            <Message key={message.id} message={message} />
+            <Message
+              key={message.id}
+              message={message}
+              setExpandedSourceIndex={setExpandedSourceIndex}
+            />
           ))}
           {loading && <MessageLoader />}
         </>
@@ -129,9 +139,22 @@ export default function Chat() {
   );
 }
 
-function Message({ message }: { message: Message }) {
+function Message({
+  message,
+  setExpandedSourceIndex,
+}: {
+  message: Message;
+  setExpandedSourceIndex: React.Dispatch<React.SetStateAction<number | null>>;
+}) {
   const { openSources } = useSidebar();
   const { setActiveMessage } = useChat();
+
+  const uniqueSourceIndices =
+    message.citations
+      ?.filter((citation) => citation.source.index !== undefined)
+      .map((citation) => citation.source.index!)
+      .filter((index, i, arr) => arr.indexOf(index) === i) || [];
+
   return (
     <div
       className={`flex ${
@@ -146,17 +169,22 @@ function Message({ message }: { message: Message }) {
         }`}
       >
         <ReactMarkdown>{message.content}</ReactMarkdown>
-        {message.citations && message.citations.length > 0 && (
+
+        {uniqueSourceIndices.length > 0 && (
           <div className="absolute -bottom-2 -right-2 flex items-center space-x-2">
-            <button
-              className="text-sm bg-black text-white rounded-lg px-2 py-[1px] cursor-pointer"
-              onClick={() => {
-                setActiveMessage(message);
-                openSources();
-              }}
-            >
-              Sources
-            </button>
+            {uniqueSourceIndices.map((index) => (
+              <button
+                key={index}
+                className="text-sm bg-black text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
+                onClick={() => {
+                  setActiveMessage(message);
+                  openSources();
+                  setExpandedSourceIndex(index);
+                }}
+              >
+                {index}
+              </button>
+            ))}
           </div>
         )}
       </div>
