@@ -87,7 +87,7 @@ export default function Chat() {
             <SquarePen />
           </Button>
         </div>
-        <div className="font-semibold text-lg">
+        <div className="font-semibold text-lg hidden sm:block">
           {activeChat?.title ?? 'Blank Chat'}
         </div>
         <Button variant="outline" onClick={toggleSources}>
@@ -180,7 +180,7 @@ function MessageInput({
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-        placeholder="Type a message..."
+        placeholder="Ask a question..."
         className="flex-grow p-2 rounded-lg focus:outline-none"
       />
       <button
