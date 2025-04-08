@@ -8,6 +8,7 @@ import { Button } from './ui/button'
 import MessageLoader from './message-loader'
 import TrendingPrompts from './trending-prompts'
 import ReactMarkdown from 'react-markdown'
+import TextareaAutosize from 'react-textarea-autosize'
 
 export default function Chat() {
   const { activeChat, setActiveChat, declareNewChat, setRefresh } = useChat()
@@ -175,14 +176,13 @@ function MessageInput({
   handleSendMessage: () => void
 }) {
   return (
-    <div className="w-full max-w-xl mx-auto p-4 flex items-center space-x-2 rounded-[28px] border shadow-sm sm:shadow-lg bg-white">
-      <input
-        type="text"
+    <div className="w-full max-w-xl mx-auto p-4 flex items-start space-x-2 rounded-[28px] border shadow-sm sm:shadow-lg bg-white">
+      <TextareaAutosize
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
         placeholder="Ask a question..."
-        className="flex-grow p-2 rounded-lg focus:outline-none"
+        className="flex-grow p-2 rounded-lg focus:outline-none resize-none"
       />
       <button
         onClick={handleSendMessage}
