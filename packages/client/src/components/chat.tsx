@@ -70,7 +70,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="relative flex flex-col h-full">
+    <div className="relative flex flex-col h-screen">
       {/* Chat Header */}
       <div className="flex flex-row justify-between p-4">
         <div className="felx flex-row gap-2">

@@ -15,7 +15,7 @@ function App() {
         <SidebarContainer isOpen={isChatHistoryOpen} absolutePosition="left">
           <ChatHistory />
         </SidebarContainer>
-        <div className="relative flex-1 h-full">
+        <div className="relative flex-1">
           <BlurLayer />
           <Chat />
         </div>
