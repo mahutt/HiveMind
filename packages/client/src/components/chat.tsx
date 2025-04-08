@@ -83,6 +83,7 @@ export default function Chat() {
               setActiveChat(null)
               setNewMessage('')
             }}
+            disabled={!activeChat}
           >
             <SquarePen />
           </Button>

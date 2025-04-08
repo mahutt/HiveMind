@@ -2,12 +2,14 @@ import { Search, Trash } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Chat } from 'models'
 import { useChat } from '../providers/chat-hook'
+import { useSidebar } from '../providers/sidebar-hook'
 import api from '../api'
 import { LanguageSelector } from './language-selector'
 import { Button } from './ui/button'
 
 export default function ChatHistory() {
   const { setActiveChat, chatHistory, setActiveMessage, refresh } = useChat()
+  const { isSmallScreen, closeChatHistory } = useSidebar()
   const [searchQuery, setSearchQuery] = useState('')
   const [chats, setChats] = useState<Chat[]>([])
 
@@ -95,6 +97,9 @@ export default function ChatHistory() {
                     const response = await api.get<Chat>(`/api/${chat.id}`)
                     setActiveMessage(null)
                     setActiveChat(response.data)
+                    if (isSmallScreen) {
+                      closeChatHistory()
+                    }
                   }}
                   className="bg-white rounded-lg p-2 mb-1 cursor-pointer hover:bg-gray-50 transition-colors shadow-sm h-12 flex items-center"
                 >
