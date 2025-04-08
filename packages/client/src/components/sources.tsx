@@ -1,40 +1,40 @@
-import { MoveUpRight } from 'lucide-react'
-import { useChat } from '../providers/chat-hook'
-import { Chat, Message, Source } from 'models'
+import { MoveUpRight } from "lucide-react";
+import { useChat } from "../providers/chat-hook";
+import { Chat, Message, Source } from "models";
 
 function extractUniqueSources(chat: Chat): Source[] {
-  const uniqueSourcesMap = new Map<string, Source>()
+  const uniqueSourcesMap = new Map<string, Source>();
   chat.messages.forEach((message) => {
     if (message.citations) {
       message.citations.forEach((citation) => {
-        uniqueSourcesMap.set(`${citation.source.id}`, citation.source)
-      })
+        uniqueSourcesMap.set(`${citation.source.id}`, citation.source);
+      });
     }
-  })
-  return Array.from(uniqueSourcesMap.values())
+  });
+  return Array.from(uniqueSourcesMap.values());
 }
 
 function extractUniqueSourcesFromMessage(message: Message): Source[] {
-  const uniqueSourcesMap = new Map<string, Source>()
+  const uniqueSourcesMap = new Map<string, Source>();
   if (message.citations) {
     message.citations.forEach((citation) => {
-      uniqueSourcesMap.set(`${citation.source.id}`, citation.source)
-    })
+      uniqueSourcesMap.set(`${citation.source.id}`, citation.source);
+    });
   }
-  return Array.from(uniqueSourcesMap.values())
+  return Array.from(uniqueSourcesMap.values());
 }
 
 export default function Sources() {
-  const { activeChat, activeMessage } = useChat()
+  const { activeChat, activeMessage } = useChat();
 
-  const sources = activeChat ? extractUniqueSources(activeChat) : []
+  const sources = activeChat ? extractUniqueSources(activeChat) : [];
 
   return (
-    <div className="h-full bg-gray-200 rounded-l-lg px-6 py-6 text-white space-y-4 overflow-y-auto">
+    <div className="h-full bg-[rgb(145,35,56)] rounded-l-lg px-6 py-6 text-white space-y-4 overflow-y-auto">
       {sources.length === 0 && (
         <>
-          <h2 className="text-gray-500 mb-2">Conversation Sources</h2>
-          <p className="text-md text-gray-500 my-6">
+          <h2 className="text-white mb-2">Conversation Sources</h2>
+          <p className="text-md text-white my-6">
             Start chatting to see where HiveMind gets its information from...
           </p>
         </>
@@ -42,7 +42,7 @@ export default function Sources() {
 
       {activeMessage && activeMessage.citations?.length !== 0 && (
         <div>
-          <h2 className="text-gray-500 mb-2">Selected Message Sources</h2>
+          <h2 className="text-white mb-2">Selected Message Sources</h2>
           <div className="flex flex-col gap-2">
             {extractUniqueSourcesFromMessage(activeMessage).map((source) => (
               <SourceLink
@@ -57,7 +57,7 @@ export default function Sources() {
 
       {sources.length > 0 && (
         <div>
-          <h2 className="text-gray-500 mb-2">All Conversation Sources</h2>
+          <h2 className="text-white mb-2">All Conversation Sources</h2>
           <div className="flex flex-col gap-2">
             {sources.map((source) => (
               <SourceLink
@@ -70,7 +70,7 @@ export default function Sources() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
 // function stripUrlProtocol(url: string) {
@@ -100,11 +100,11 @@ function SourceLink({ url, title }: { url: string; title: string }) {
     <a href={url} target="_blank" rel="noopener noreferrer">
       <div className="text-black bg-white rounded-lg px-3 py-2">
         <div className="flex items-center gap-2">
-          <span className="min-w-4 h-4 bg-red-800 rounded-full"></span>
+          <span className="min-w-4 h-4 bg-[rgb(145,35,56)] rounded-full"></span>
           <div className="flex-1 truncate">{title}</div>
           <MoveUpRight className="min-w-4 h-4 ml-1" />
         </div>
       </div>
     </a>
-  )
+  );
 }

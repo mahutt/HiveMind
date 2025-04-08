@@ -1,74 +1,74 @@
-import { useState } from 'react'
-import { ArrowUp, PanelLeft, SquarePen } from 'lucide-react'
-import api from '../api'
-import { useSidebar } from '../providers/sidebar-hook'
-import type { Chat, Message } from 'models'
-import { useChat } from '../providers/chat-hook'
-import { Button } from './ui/button'
-import MessageLoader from './message-loader'
-import TrendingPrompts from './trending-prompts'
-import ReactMarkdown from 'react-markdown'
-import TextareaAutosize from 'react-textarea-autosize'
+import { useState } from "react";
+import { ArrowUp, PanelLeft, SquarePen } from "lucide-react";
+import api from "../api";
+import { useSidebar } from "../providers/sidebar-hook";
+import type { Chat, Message } from "models";
+import { useChat } from "../providers/chat-hook";
+import { Button } from "./ui/button";
+import MessageLoader from "./message-loader";
+import TrendingPrompts from "./trending-prompts";
+import ReactMarkdown from "react-markdown";
+import TextareaAutosize from "react-textarea-autosize";
 
 export default function Chat() {
-  const { activeChat, setActiveChat, declareNewChat, setRefresh } = useChat()
-  const { toggleChatHistory, toggleSources, isSourcesOpen } = useSidebar()
-  const [newMessage, setNewMessage] = useState('')
-  const [loading, setLoading] = useState(false)
+  const { activeChat, setActiveChat, declareNewChat, setRefresh } = useChat();
+  const { toggleChatHistory, toggleSources, isSourcesOpen } = useSidebar();
+  const [newMessage, setNewMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSendMessage = async () => {
-    setLoading(true)
-    let newChat: Chat | null = null
-    let isNew = false
+    setLoading(true);
+    let newChat: Chat | null = null;
+    let isNew = false;
 
     if (!activeChat) {
-      newChat = (await api.post<Chat>('/api')).data
-      isNew = true
-      declareNewChat(newChat)
+      newChat = (await api.post<Chat>("/api")).data;
+      isNew = true;
+      declareNewChat(newChat);
     }
 
     const tempMessage: Message = {
       id: activeChat?.messages.length ?? 0,
-      role: 'user',
+      role: "user",
       content: newMessage,
       timestamp: Date.now(),
-    }
+    };
     if (newChat) {
-      newChat.messages.push(tempMessage)
-      setActiveChat(newChat)
+      newChat.messages.push(tempMessage);
+      setActiveChat(newChat);
     } else if (activeChat) {
       setActiveChat((prev) => {
-        if (!prev) return prev
+        if (!prev) return prev;
         return {
           ...prev,
           messages: [...prev.messages, tempMessage],
-        }
-      })
+        };
+      });
     }
 
-    const chatId = activeChat?.id ?? newChat!.id
+    const chatId = activeChat?.id ?? newChat!.id;
     const response = api.post<Chat>(`/api/${chatId}`, {
       message: newMessage,
-    })
-    setNewMessage('')
+    });
+    setNewMessage("");
 
-    const updatedChat = (await response).data
-    setActiveChat(updatedChat)
-    setLoading(false)
+    const updatedChat = (await response).data;
+    setActiveChat(updatedChat);
+    setLoading(false);
     if (isNew) {
       api.post<string>(`/api/rename/${updatedChat.id}`).then((response) => {
-        const title = response.data
+        const title = response.data;
         setActiveChat((prev) => {
-          if (!prev) return prev
+          if (!prev) return prev;
           return {
             ...prev,
             title: title,
-          }
-        })
-        setRefresh((prev) => !prev)
-      })
+          };
+        });
+        setRefresh((prev) => !prev);
+      });
     }
-  }
+  };
 
   return (
     <div className="relative flex flex-col h-screen">
@@ -81,8 +81,8 @@ export default function Chat() {
           <Button
             variant="ghost"
             onClick={() => {
-              setActiveChat(null)
-              setNewMessage('')
+              setActiveChat(null);
+              setNewMessage("");
             }}
             disabled={!activeChat}
           >
@@ -90,10 +90,10 @@ export default function Chat() {
           </Button>
         </div>
         <div className="font-semibold text-lg hidden sm:block">
-          {activeChat?.title ?? 'Blank Chat'}
+          {activeChat?.title ?? "Blank Chat"}
         </div>
         <Button variant="outline" onClick={toggleSources}>
-          {isSourcesOpen ? 'Hide Sources' : 'Show Sources'}
+          {isSourcesOpen ? "Hide Sources" : "Show Sources"}
         </Button>
       </div>
       {/* Messages Container */}
@@ -108,8 +108,8 @@ export default function Chat() {
       <div
         className={`absolute left-0 right-0 w-full transition-all duration-300 ease-in-out ${
           !activeChat || activeChat.messages.length === 0
-            ? 'bottom-1/2 translate-y-1/2'
-            : 'bottom-0'
+            ? "bottom-1/2 translate-y-1/2"
+            : "bottom-0"
         }`}
       >
         <div className={`flex items-center justify-center p-4`}>
@@ -126,23 +126,23 @@ export default function Chat() {
         />
       </div>
     </div>
-  )
+  );
 }
 
 function Message({ message }: { message: Message }) {
-  const { openSources } = useSidebar()
-  const { setActiveMessage } = useChat()
+  const { openSources } = useSidebar();
+  const { setActiveMessage } = useChat();
   return (
     <div
       className={`flex ${
-        message.role === 'user' ? 'justify-end' : 'justify-start'
+        message.role === "user" ? "justify-end" : "justify-start"
       } max-w-xl mx-auto`}
     >
       <div
         className={`relative max-w-[75%] p-3 rounded-lg ${
-          message.role === 'user'
-            ? 'bg-blue-500 text-white'
-            : 'bg-gray-200 text-black'
+          message.role === "user"
+            ? "bg-[rgb(145,35,56)] text-white"
+            : "bg-gray-200 text-black"
         }`}
       >
         <ReactMarkdown>{message.content}</ReactMarkdown>
@@ -151,8 +151,8 @@ function Message({ message }: { message: Message }) {
             <button
               className="text-sm bg-black text-white rounded-lg px-2 py-[1px] cursor-pointer"
               onClick={() => {
-                setActiveMessage(message)
-                openSources()
+                setActiveMessage(message);
+                openSources();
               }}
             >
               Sources
@@ -161,7 +161,7 @@ function Message({ message }: { message: Message }) {
         )}
       </div>
     </div>
-  )
+  );
 }
 
 function MessageInput({
@@ -170,29 +170,29 @@ function MessageInput({
   loading,
   handleSendMessage,
 }: {
-  message: string
-  setMessage: (message: string) => void
-  loading: boolean
-  handleSendMessage: () => void
+  message: string;
+  setMessage: (message: string) => void;
+  loading: boolean;
+  handleSendMessage: () => void;
 }) {
   return (
     <div className="w-full max-w-xl mx-auto p-4 flex items-start space-x-2 rounded-[28px] border shadow-sm sm:shadow-lg bg-white">
       <TextareaAutosize
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+        onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
         placeholder="Ask a question..."
         className="flex-grow p-2 rounded-lg focus:outline-none resize-none"
       />
       <button
         onClick={handleSendMessage}
         disabled={loading}
-        className={`bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors ${
-          loading ? 'opacity-50' : 'opacity-100'
+        className={`bg-[rgb(145,35,56)] text-white p-2 rounded-full hover:bg-[rgb(173,43,67)] transition-colors ${
+          loading ? "opacity-50" : "opacity-100"
         }`}
       >
         <ArrowUp />
       </button>
     </div>
-  )
+  );
 }
