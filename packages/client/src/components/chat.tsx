@@ -159,10 +159,10 @@ function Message({
     <div
       className={`flex ${
         message.role === "user" ? "justify-end" : "justify-start"
-      } max-w-xl mx-auto`}
+      } max-w-3xl mx-auto`}
     >
       <div
-        className={`relative max-w-[75%] p-3 rounded-lg ${
+        className={`relative max-w-[85%] p-3 rounded-lg ${
           message.role === "user"
             ? "bg-[rgb(145,35,56)] text-white"
             : "bg-gray-200 text-black"

@@ -7,6 +7,7 @@ import api from "../api";
 import { LanguageSelector } from "./language-selector";
 import { Button } from "./ui/button";
 import "../scrollbar.css";
+import HiveMindLogo from "../components/ui/HiveMind.png";
 
 export default function ChatHistory() {
   const { setActiveChat, chatHistory, setActiveMessage, refresh } = useChat();
@@ -81,7 +82,16 @@ export default function ChatHistory() {
 
       {/* Main scrollable area - make it take up all available space */}
       <div className="flex-grow overflow-y-auto px-2 pb-2 custom-scrollbar">
-        <div className="h-4"></div>
+        <div className="flex items-center px-3 py-2">
+          <div className="w-12 h-12 rounded-full overflow-hidden mr-1 flex-shrink-0">
+            <img
+              src={HiveMindLogo}
+              alt="HiveMind Logo"
+              className="w-full h-full object-cover filter brightness-0 invert"
+            />
+          </div>
+          <span className="text-white font-semi-bold text-xl">HiveMind</span>
+        </div>
 
         {sortedDates.map((dateString) => (
           <div key={dateString} className="mb-10">
