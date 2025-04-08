@@ -72,7 +72,7 @@ export const getResponse = async (
             You are expected use the file_search tool, if it is available, which attempts to retrieve content by embedding the query paramater and then performing a similarity search.
             You must only use the facts from retrieved context to answer questions.
             If the relevant answer cannot be found in the context, ask the user for more information to improve your similarity search.
-            If asked a question that is not relevant to schooling or Concordia University, politely decline to answer.`,
+            If asked a question that is not in some way related to Concordia University, politely decline to answer.`,
       },
       ...messages.map((message) => ({
         role: message.role,
