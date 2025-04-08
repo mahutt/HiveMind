@@ -115,7 +115,6 @@ export default function Chat() {
             message={newMessage}
             setMessage={setNewMessage}
             loading={loading}
-            setLoading={setLoading}
             handleSendMessage={handleSendMessage}
           />
         </div>
@@ -167,13 +166,11 @@ function MessageInput({
   message,
   setMessage,
   loading,
-  setLoading,
   handleSendMessage,
 }: {
   message: string
   setMessage: (message: string) => void
   loading: boolean
-  setLoading: (loading: boolean) => void
   handleSendMessage: () => void
 }) {
   return (
