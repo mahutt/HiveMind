@@ -3,7 +3,7 @@ import { TrendingUp } from 'lucide-react'
 const TRENDING_PROMPTS = [
   'How do I build my course schedule?',
   'How can I make friends on campus?',
-  'What is the deadline to add and drop classes?',
+  "When's the deadline to drop classes?",
 ]
 
 export default function TrendingPrompts({
