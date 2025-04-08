@@ -29,8 +29,7 @@ export default function DisclaimerModal() {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground text-sm">
-              We don't do anything with user data, see our data privacy
-              disclaimer{' '}
+              We don't do anything with user data, see our privacy policy{' '}
               <a href="/#" className="underline">
                 here
               </a>
