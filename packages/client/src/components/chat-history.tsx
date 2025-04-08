@@ -68,7 +68,7 @@ export default function ChatHistory() {
           <input
             type="text"
             placeholder="Search"
-            className="bg-transparent border-none outline-none w-full px-2 py-1 text-sm"
+            className="bg-transparent border-none outline-none w-full px-2 py-1 text-base"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
