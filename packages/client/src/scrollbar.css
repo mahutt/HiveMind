@@ -1,23 +1,23 @@
 .custom-scrollbar::-webkit-scrollbar {
-    width: 16px; 
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: rgb(145, 35, 56);
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: white;
-    border-radius: 6px; 
-    min-height: 40px;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(173, 43, 67);
-  }
-  
-  /* For Firefox */
-  .custom-scrollbar {
-    scrollbar-width: auto; 
-    scrollbar-color: white rgb(145, 35, 56);
-  }
+  width: 16px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgb(145, 35, 56);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: white;
+  border-radius: 6px;
+  min-height: 40px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(173, 43, 67);
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-width: auto;
+  scrollbar-color: white rgb(145, 35, 56);
+}

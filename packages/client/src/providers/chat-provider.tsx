@@ -1,51 +1,51 @@
-import { Chat, Message } from "models";
-import React, { createContext, useState, ReactNode, useEffect } from "react";
-import useLocalStorage from "use-local-storage";
+import { Chat, Message } from 'models'
+import React, { createContext, useState, ReactNode, useEffect } from 'react'
+import useLocalStorage from 'use-local-storage'
 
 export interface ChatState {
-  activeChat: Chat | null;
-  setActiveChat: React.Dispatch<React.SetStateAction<Chat | null>>;
-  activeMessage: Message | null;
-  setActiveMessage: React.Dispatch<React.SetStateAction<Message | null>>;
-  chatHistory: number[];
-  clearChatHistory: () => void;
-  declareNewChat: (chat: Chat) => void;
-  refresh: boolean;
-  setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
-  expandedSourceIndex: number | null;
-  setExpandedSourceIndex: React.Dispatch<React.SetStateAction<number | null>>;
+  activeChat: Chat | null
+  setActiveChat: React.Dispatch<React.SetStateAction<Chat | null>>
+  activeMessage: Message | null
+  setActiveMessage: React.Dispatch<React.SetStateAction<Message | null>>
+  chatHistory: number[]
+  clearChatHistory: () => void
+  declareNewChat: (chat: Chat) => void
+  refresh: boolean
+  setRefresh: React.Dispatch<React.SetStateAction<boolean>>
+  expandedSourceIndex: number | null
+  setExpandedSourceIndex: React.Dispatch<React.SetStateAction<number | null>>
 }
 
-const ChatContext = createContext<ChatState | undefined>(undefined);
+const ChatContext = createContext<ChatState | undefined>(undefined)
 
 interface ChatProviderProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
 export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
-  const [activeChat, setActiveChat] = useState<Chat | null>(null);
-  const [activeMessage, setActiveMessage] = useState<Message | null>(null);
+  const [activeChat, setActiveChat] = useState<Chat | null>(null)
+  const [activeMessage, setActiveMessage] = useState<Message | null>(null)
   const [chatHistory, setChatHistory] = useLocalStorage<number[]>(
-    "chat-history",
+    'chat-history',
     []
-  );
-  const [refresh, setRefresh] = useState(true);
+  )
+  const [refresh, setRefresh] = useState(true)
 
   const [expandedSourceIndex, setExpandedSourceIndex] = useState<number | null>(
     null
-  );
+  )
 
   const declareNewChat = (chat: Chat) => {
-    setChatHistory((prev) => [...(prev ?? []), chat.id]);
-  };
+    setChatHistory((prev) => [...(prev ?? []), chat.id])
+  }
 
   const clearChatHistory = () => {
-    setChatHistory([]);
-  };
+    setChatHistory([])
+  }
 
   useEffect(() => {
-    setActiveMessage(null);
-  }, [activeChat]);
+    setActiveMessage(null)
+  }, [activeChat])
 
   const value: ChatState = {
     activeChat,
@@ -59,9 +59,9 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
     setRefresh,
     expandedSourceIndex,
     setExpandedSourceIndex,
-  };
+  }
 
-  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
-};
+  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>
+}
 
-export { ChatContext };
+export { ChatContext }
