@@ -1,6 +1,10 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+@theme {
+  --color-conu: oklch(0.44 0.1448 14.92);
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {

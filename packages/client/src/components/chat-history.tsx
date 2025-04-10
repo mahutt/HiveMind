@@ -65,7 +65,7 @@ export default function ChatHistory() {
   }
 
   return (
-    <div className="h-full bg-[rgb(145,35,56)] flex flex-col rounded-r-sm">
+    <div className="h-full bg-conu flex flex-col rounded-r-sm">
       {/* Search bar - keep as is */}
       <div className="p-2">
         <div className="flex items-center bg-white rounded-sm px-3 py-2 shadow-sm">
