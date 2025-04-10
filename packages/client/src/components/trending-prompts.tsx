@@ -32,7 +32,7 @@ export default function TrendingPrompts({
 function TrendingPrompt({ prompt }: { prompt: string }) {
   return (
     <div className="cursor-pointer flex items-center gap-4 rounded-lg text-gray-500 hover:text-black hover:bg-gray-50 p-4">
-      <TrendingUp className="" strokeWidth={1.5} />
+      <TrendingUp className="text-conu" strokeWidth={1.5} />
       <p>{prompt}</p>
     </div>
   )
