@@ -38,6 +38,7 @@ export default function DisclaimerModal() {
           </CardContent>
           <CardFooter className="flex justify-end">
             <Button
+              className="bg-conu hover:bg-conu/80 text-white"
               onClick={() => {
                 setDisclaimerDismissed(true)
               }}

@@ -39,11 +39,11 @@ export default function Sources() {
   }
 
   return (
-    <div className="h-full bg-conu rounded-l-lg px-6 py-6 text-white space-y-4 overflow-y-auto">
+    <div className="h-full bg-muted rounded-l-lg px-6 py-6 space-y-4 overflow-y-auto">
       {sources.length === 0 && (
         <>
-          <h2 className="text-white mb-2">Conversation Sources</h2>
-          <p className="text-md text-white my-6">
+          <h2 className="mb-2">Conversation Sources</h2>
+          <p className="text-md my-6">
             Start chatting to see where HiveMind gets its information from...
           </p>
         </>
@@ -51,7 +51,7 @@ export default function Sources() {
 
       {activeMessage && activeMessage.citations?.length !== 0 && (
         <div>
-          <h2 className="text-white mb-2">Selected Message Sources</h2>
+          <h2 className="mb-2">Selected Message Sources</h2>
           <div className="flex flex-col gap-2">
             {extractUniqueSourcesFromMessage(activeMessage).map(
               (source) =>
@@ -76,7 +76,7 @@ export default function Sources() {
 
       {sources.length > 0 && (
         <div>
-          <h2 className="text-white mb-2">All Conversation Sources</h2>
+          <h2 className="mb-2">All Conversation Sources</h2>
           <div className="flex flex-col gap-2">
             {sources.map(
               (source) =>
@@ -89,7 +89,7 @@ export default function Sources() {
                       url={source.url}
                       title={source.title}
                       index={source.index}
-                      isExpanded={expandedSourceIndex === source.index}
+                      isExpanded={false}
                     />
                   </div>
                 )
@@ -134,48 +134,18 @@ function SourceLink({
   index?: number
   isExpanded?: boolean
 }) {
-  console.log(
-    `SourceLink Debug - Title: ${title}, Index: ${index}, isExpanded: ${isExpanded}`
-  )
-
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex-grow flex items-center"
-    >
+    <a href={url} target="_blank" rel="noopener noreferrer">
       <div
-        className={`
-          text-black 
-          bg-white 
-          rounded-lg 
-          overflow-hidden 
-          transition-all 
-          duration-300 
-          ease-in-out 
-          w-full
-          ${isExpanded ? 'h-auto min-h-[4rem]' : 'h-12'}
-        `}
+        className={`text-black bg-white rounded-lg px-3 py-2 border-2 ${
+          isExpanded ? 'border-conu' : 'border-white'
+        }`}
       >
-        <div className="flex items-center p-3 cursor-pointer">
-          {index !== undefined && (
-            <span className="text-conu font-bold mr-2">[{index}]</span>
-          )}
-          <div className="flex-1">
-            <div
-              className={`
-                w-full 
-                ${
-                  isExpanded
-                    ? 'font-bold break-words whitespace-normal'
-                    : 'truncate'
-                }
-              `}
-            >
-              {title}
-            </div>
-          </div>
+        <div className="flex items-center gap-2">
+          <span className="flex justify-center items-center text-sm text-white bg-conu rounded-full w-6 h-6">
+            {index}
+          </span>
+          <div className="flex-1 truncate">{title}</div>
           <MoveUpRight className="min-w-4 h-4 ml-1" />
         </div>
       </div>

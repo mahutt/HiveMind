@@ -65,7 +65,7 @@ export default function ChatHistory() {
   }
 
   return (
-    <div className="h-full bg-conu flex flex-col rounded-r-sm">
+    <div className="h-full bg-muted flex flex-col rounded-r-sm">
       {/* Search bar - keep as is */}
       <div className="p-2">
         <div className="flex items-center bg-white rounded-sm px-3 py-2 shadow-sm">
@@ -82,20 +82,20 @@ export default function ChatHistory() {
 
       {/* Main scrollable area - make it take up all available space */}
       <div className="flex-grow overflow-y-auto px-2 pb-2 custom-scrollbar">
-        <div className="flex items-center px-3 py-2">
-          <div className="w-12 h-12 rounded-full overflow-hidden mr-1 flex-shrink-0">
+        <div className="flex items-center my-6">
+          <div className="w-8 h-8 rounded-full overflow-hidden mr-1 flex-shrink-0">
             <img
               src={HiveMindLogo}
               alt="HiveMind Logo"
-              className="w-full h-full object-cover filter brightness-0 invert"
+              className="w-full h-full object-cover filter brightness-0"
             />
           </div>
-          <span className="text-white font-semi-bold text-xl">HiveMind</span>
+          <span className="font-semi-bold text-xl">HiveMind</span>
         </div>
 
         {sortedDates.map((dateString) => (
-          <div key={dateString} className="mb-10">
-            <h3 className="text-xs font-semibold text-white mb-2 px-1 uppercase tracking-wide">
+          <div key={dateString} className="mb-6">
+            <h3 className="text-xs text-conu font-semibold mb-2 px-1 uppercase tracking-wide">
               {getFormattedDate(dateString)}
             </h3>
             {chatsByDate[dateString]
@@ -115,7 +115,7 @@ export default function ChatHistory() {
                       closeChatHistory()
                     }
                   }}
-                  className="rounded-sm text-s p-2 mb-1 text-white cursor-pointer hover:bg-[rgb(173,43,67)] transition-colors duration-200 h-8 flex items-center"
+                  className="rounded-sm text-s p-2 mb-1 cursor-pointer hover:bg-white transition-colors duration-200 h-8 flex items-center"
                 >
                   <p className="text-sm truncate">{chat.title}</p>
                 </div>

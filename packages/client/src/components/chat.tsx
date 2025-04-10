@@ -95,7 +95,7 @@ export default function Chat() {
             <SquarePen />
           </Button>
         </div>
-        <div className="font-semibold text-lg hidden sm:block">
+        <div className="text-gray-800 font-semibold text hidden sm:block">
           {activeChat?.title ?? 'Blank Chat'}
         </div>
         <Button variant="outline" onClick={toggleSources}>
@@ -159,7 +159,7 @@ function Message({
     <div
       className={`flex ${
         message.role === 'user' ? 'justify-end' : 'justify-start'
-      } max-w-3xl mx-auto`}
+      } max-w-xl mx-auto`}
     >
       <div
         className={`relative max-w-[85%] p-3 rounded-lg ${
