@@ -70,3 +70,8 @@ bun install
 5. In a separate terminal, navigate to `packages/client/` and run `bun run dev`.
 6. You can now access the application in your browser at `http://localhost:5173/`.
 
+## Mobile Testing
+
+Follow the instructions [here](https://github.com/mahutt/HiveMind/wiki/HiveMind-on-Mobile) for an idea on how to run the application on your mobile phone (from your development server).
+
+
