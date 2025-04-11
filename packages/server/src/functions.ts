@@ -1,4 +1,4 @@
-import { saveEmbedding, newSource } from './database.js'
+import { saveEmbedding, newSource, closeConnection } from './database.js'
 import { getEmbedding } from './openai.js'
 import fs from 'fs/promises'
 import path from 'path'
@@ -35,7 +35,5 @@ const populateDatabase = async () => {
 }
 
 // To populate the database, run the following:
-// await populateDatabase();
-// closeConnection();
-
-export { populateDatabase }
+await populateDatabase()
+closeConnection()
