@@ -1,3 +1,7 @@
+# HiveMind
+
+HiveMind is a RAG powered chatbot with access to information scraped from Concordia's website. This chatbot leverages the OpenAI embeddings and completions APIs.
+
 # HiveMind Setup Instructions
 
 Start by cloning this repository, and then follow the steps below.
